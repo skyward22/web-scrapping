@@ -6,23 +6,40 @@ const url =
 
 const product = { name: "", price: "", link: "" };
 
-async function scrape() {
-  //Fetch the data
-  const { data } = await axios.get(url);
-  //Load up the html
-  const $ = cheerio.load(data);
-  const item = $("div#dp-container");
-  //Extract the data that we need
-  product.name = $(item).find("h1 span#productTitle").text();
-  product.link = url;
-  const price = $(item)
-    .find("span .a-price-whole")
-    .first()
-    .text()
-    .replace(/[,.]/g, "");
-  const priceNum = parseInt(price);
-  product.price = priceNum;
-  console.log(product);
-}
+const scrape = async () => {
+  try {
+    const { data } = await axios.get(url);
+    const $ = cheerio.load(data);
+    const item = $("div#dp");
+    product.name = $(item).find("h1 span#productTitle").text();
+    product.link = url;
+    const price = $(item)
+      .find("span .a-price-whole")
+      .first()
+      .text()
+      .replace(/[,.]/g, "");
+    const priceNum = parseInt(price);
+    product.price = priceNum;
+    console.log(product);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+// async function scrape() {
+//   const { data } = await axios.get(url);
+//   const $ = cheerio.load(data);
+//   const item = $("div#dp");
+//   product.name = $(item).find("h1 span#productTitle").text();
+//   product.link = url;
+//   const price = $(item)
+//     .find("span .a-price-whole")
+//     .first()
+//     .text()
+//     .replace(/[,.]/g, "");
+//   const priceNum = parseInt(price);
+//   product.price = priceNum;
+//   console.log(product);
+// }
 
 scrape();
